@@ -57,7 +57,7 @@ const Obstacle = () => {
     const difference = Math.abs(distance - last_distance)
 
     if (difference >= 300) {
-      // spawnObstacle()
+      spawnObstacle()
       setLastDistance(distance)
     }
   }, [distance])
