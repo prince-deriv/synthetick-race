@@ -1,13 +1,34 @@
-import { atom } from 'recoil'
+import { atom } from "recoil";
 
 const speedState = atom({
-  key: 'speed',
-  default: 0
-})
+  key: "speed",
+  default: 0.5,
+});
 
 const distanceState = atom({
-  key: 'distance',
-  default: 0
-})
+  key: "distance",
+  default: 0,
+});
 
-export { speedState, distanceState }
+const carLaneState = atom({
+  key: "lane",
+  default: 0,
+});
+
+const collisionState = atom({
+  key: "collision",
+  default: false,
+});
+
+const enemyDistanceState = atom({
+  key: "enemy_distance",
+  default: 0,
+});
+
+export {
+  speedState,
+  distanceState,
+  carLaneState,
+  collisionState,
+  enemyDistanceState,
+};
