@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, useState } from 'react'
-import styled from 'styled-components'
-import 'styles/global.scss'
-import TerrainBg from 'images/terrain.jpg'
-import { Car, Obstacle } from 'components'
-import { useRecoilState } from 'recoil'
-import { speedState, distanceState } from 'atoms'
+import React, { useRef, useEffect, useState } from "react";
+import styled from "styled-components";
+import "styles/global.scss";
+import TerrainBg from "images/terrain.jpg";
+import { Car, Obstacle } from "components";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { speedState, distanceState, enemyDistanceState } from "atoms";
 
 const Terrain = styled.div`
   position: absolute;
@@ -20,87 +20,70 @@ const Terrain = styled.div`
   background-position: 0 0;
   z-index: 1;
 }
-`
+`;
 
 // markup
 const Game = () => {
-  const terrain = useRef()
-  const [, setCarSpeed] = useRecoilState(speedState)
-  const [, setDistance] = useRecoilState(distanceState)
+  const terrain = useRef();
+  const [speed, setCarSpeed] = useRecoilState(speedState);
+  const [, setDistance] = useRecoilState(distanceState);
   const [data, setData] = useState({
-    speed: 0
-  })
+    speed: 0,
+  });
+
+  const enemy_distance = useRecoilValue(enemyDistanceState);
 
   useEffect(() => {
-    const current = terrain.current
-    let terrain_move
+    const current = terrain.current;
+    let terrain_move;
     if (current) {
       terrain_move = setInterval(() => {
-        move()
-      }, 10)
+        move();
+      }, 10);
     }
 
-    setInterval(() => {
-      const current_speed = current.getAttribute('speed')
-      const speed = !current_speed ? 0.7 : parseFloat(current_speed)
+    setDistance(1);
 
-      if (speed < 10) {
-        speedUp()
-      }
-    }, 1000)
+    return () => clearInterval(terrain_move);
+  }, []);
 
-    return () => clearInterval(terrain_move)
-  }, [])
+  useEffect(() => {
+    const current = terrain.current;
+    const final_speed = speed < 0 ? 1 : speed;
+    current.setAttribute("speed", final_speed);
+  }, [speed]);
 
   const move = () => {
-    const current = terrain.current
-    const current_speed = current.getAttribute('speed')
-    const bpy = current.style.backgroundPositionY
+    const player = document.getElementById("car");
+    const current = terrain.current;
+    const current_speed = player.getAttribute("speed");
+    const bpy = current.style.backgroundPositionY;
 
-    const speed = !current_speed ? 0 : parseFloat(current_speed)
-    const posY = bpy === '' ? 0 : parseFloat(bpy)
+    const speed = !current_speed ? 0 : parseFloat(current_speed);
+    const posY = bpy === "" ? 0 : parseFloat(bpy);
 
-    const new_bpy = posY + speed
+    const new_bpy = posY + speed;
 
-    current.style.backgroundPositionY = `${new_bpy}px`
-    current.setAttribute('speed', speed)
+    current.style.backgroundPositionY = `${new_bpy}px`;
+    player.setAttribute("speed", speed);
 
-    const new_data = { ...data }
-    new_data.speed = parseInt(speed * 20)
+    const new_data = { ...data };
+    new_data.speed = parseInt(speed * 30);
 
-    setDistance(new_bpy)
-    setCarSpeed(speed)
-    setData(new_data)
-  }
-
-  const speedUp = () => {
-    const speed_increment = 0.1
-    const current = terrain.current
-    const current_speed = parseFloat(current.getAttribute('speed'))
-    const new_speed = current_speed + speed_increment
-
-    current.setAttribute('speed', new_speed)
-  }
-
-  const speedDown = () => {
-    const speed_increment = 1
-    const current = terrain.current
-    const current_speed = parseFloat(current.getAttribute('speed'))
-    const new_speed = current_speed - speed_increment
-
-    current.setAttribute('speed', new_speed)
-  }
+    setDistance(new_bpy);
+    setCarSpeed(speed);
+    setData(new_data);
+  };
 
   return (
     <>
-      <Terrain ref={terrain} />
+      <Terrain ref={terrain} id="terrain" />
       <Obstacle />
       <Car />
-      <button onClick={speedUp}>+</button>
-      <button onClick={speedDown}>-</button>
       <h1>Speed: {data.speed}km/h</h1>
+      <h1>Enemy: {enemy_distance.toFixed(2)}M</h1>
     </>
-  )
-}
+  );
+};
 
-export default Game
+export default Game;

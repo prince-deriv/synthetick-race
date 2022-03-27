@@ -4,12 +4,58 @@ body {
   color: white;
 }
 
+.car {
+  height: 80px;
+  width: auto;
+  position: relative;
+  left: 0px;
+  transition: left 0.3s ease-in, transform 0.1s ease-out; 
+
+  &.right-turn {
+    transform: rotate(12deg);
+  }
+
+  &.right-move {
+    left: 30px;
+  }
+
+  &.left-turn {
+    transform: rotate(-12deg);
+  }
+
+  &.left-move {
+    left: -40px;
+  }
+}
+
 .obstacle-item {
   height: 50px;
   width: 50px;
   position: absolute;
+  background-repeat: no-repeat;
+  transition: opacity 3s ease;
+
+  &.collision {
+    transition: top 0.5s ease-in;
+  }
 
   &.right {
     left: 80px;
   }
+}
+
+[state="fade"]{
+  opacity: 1;
+  animation: fade 0.5s infinite;
+}
+
+.blink {
+  opacity: 1;
+  animation: fade 0.5s infinite;
+}
+
+
+@keyframes fade {
+  0%,100% { opacity: 0 }
+  50% { opacity: 1 }
 }
