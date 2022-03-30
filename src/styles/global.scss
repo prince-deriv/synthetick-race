@@ -7,7 +7,7 @@ body {
 .car {
   height: 80px;
   width: auto;
-  position: relative;
+  position: absolute;
   left: 0px;
   transition: left 0.3s ease-in, transform 0.1s ease-out; 
 
@@ -16,7 +16,7 @@ body {
   }
 
   &.right-move {
-    left: 30px;
+    left: 80px;
   }
 
   &.left-turn {
@@ -24,7 +24,7 @@ body {
   }
 
   &.left-move {
-    left: -40px;
+    left: 10px;
   }
 }
 
@@ -47,6 +47,10 @@ body {
 [state="fade"]{
   opacity: 1;
   animation: fade 0.5s infinite;
+}
+
+[state="dead"]{
+  display: none;
 }
 
 .blink {
