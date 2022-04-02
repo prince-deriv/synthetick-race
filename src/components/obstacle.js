@@ -20,7 +20,12 @@ import {
   getState,
   getType,
   getDistance,
-  getRanking
+  getRanking,
+  setCollision,
+  getCollision,
+  getLeft,
+  getCarCoordinates,
+  checkCollision
 } from 'helpers/utils'
 import {
   Cars,
@@ -159,56 +164,98 @@ const Obstacle = () => {
   }
 
   const handleCarCollision = () => {
+    checkCollision()
+
     Cars.forEach(c => {
       const is_player = c === 'car'
       const lane = getLane(c)
       const position = is_player ? 0 : getPosition(c)
       const speed = getSpeed(c)
+      const left = getLeft(c)
+      const collision = getCollision(c)
       const collision_buffer = is_player ? CAR_SIZE : position + CAR_SIZE
-      const collision_impact = 60
 
-      Cars.forEach(oc => {
-        if (oc !== c) {
-          const is_oplayer = oc === 'car'
-          const olane = getLane(oc)
-          const oposition = is_oplayer ? 0 : getPosition(oc)
-          const ospeed = getSpeed(oc)
-          const state = getState(oc)
+      checkCollision()
 
-          if (
-            lane === olane &&
-            oposition < collision_buffer &&
-            oposition > collision_buffer - CAR_SIZE &&
-            state !== CAR_STATUS.dead
-          ) {
-            let new_speed = null
-            let o_new_speed = null
-            let new_bottom = null
-            let o_new_bottom = null
+      // Cars.forEach(oc => {
+      //   if (oc !== c) {
+      //     const is_oplayer = oc === 'car'
+      //     const olane = getLane(oc)
+      //     const oposition = is_oplayer ? 0 : getPosition(oc)
+      //     const ospeed = getSpeed(oc)
+      //     const state = getState(oc)
+      //     const oleft = getLeft(oc)
+      //     const ocollision = getCollision(oc)
 
-            const speed_increment = 0.04
-            const speed_reduction = 0.02
+      //     if (
+      //       lane === olane &&
+      //       oposition < collision_buffer &&
+      //       oposition > collision_buffer - (CAR_SIZE + 10) &&
+      //       state !== CAR_STATUS.dead
+      //     ) {
+      //       let new_speed = speed
+      //       let o_new_speed = ospeed
+      //       let new_bottom = position
+      //       let o_new_bottom = oposition
 
-            if (position > oposition) {
-              new_speed = speed + speed * speed_increment
-              o_new_speed = ospeed - ospeed * speed_reduction
-              // new_bottom = is_player ? 0 : position - collision_impact
-              new_bottom = is_player ? 0 : position
-              o_new_bottom = is_oplayer ? 0 : oposition + collision_impact
-            } else {
-              new_speed = speed - speed * speed_reduction
-              o_new_speed = ospeed + ospeed * speed_increment
-              // new_bottom = is_player ? 0 : position - collision_impact
-              new_bottom = is_player ? 0 : position
-              o_new_bottom = is_oplayer ? 0 : oposition + collision_impact
-            }
-            setSpeed(c, new_speed)
-            setSpeed(oc, o_new_speed)
-            setPosition(c, new_bottom)
-            setPosition(oc, o_new_bottom)
-          }
-        }
-      })
+      //       const speed_increment = 0.5
+      //       const speed_reduction = 0
+      //       const collision_impact = 30
+
+      //       if (position > oposition) {
+      //         new_speed = speed + speed * speed_increment
+      //         o_new_speed = ospeed - ospeed * speed_reduction
+      //         // new_bottom = is_player ? 0 : position - collision_impact
+      //         new_bottom = is_player ? 0 : position + collision_impact
+      //         o_new_bottom = is_oplayer ? 0 : oposition
+      //       } else {
+      //         new_speed = speed - speed * speed_reduction
+      //         o_new_speed = ospeed + ospeed * speed_increment
+      //         // new_bottom = is_player ? 0 : position - collision_impact
+      //         new_bottom = is_player ? 0 : position
+      //         o_new_bottom = is_oplayer ? 0 : oposition + collision_impact
+      //       }
+
+      //       // const expected_left = lane === 0 ? 10 : 80
+
+      //       // if (position > oposition) {
+      //       //   if (expected_left === left) {
+      //       //     new_speed = speed + speed * speed_increment
+      //       //     new_bottom = is_player ? 0 : position + collision_impact
+
+      //       //     if (is_player) {
+      //       //       o_new_bottom = oposition - collision_impact
+      //       //     }
+      //       //   }
+      //       // } else {
+      //       //   if (lane === 1 && left < expected_left) {
+      //       //     carMove(c, 0)
+      //       //   }
+      //       //   if (lane === 0 && left > expected_left) {
+      //       //     carMove(c, 1)
+      //       //   }
+      //       // }
+
+      //       // setSpeed(c, new_speed)
+      //       // setPosition(c, new_bottom)
+      //       // setPosition(oc, o_new_bottom)
+      //       // setPosition(c, new_bottom)
+
+      //       // setCollision(c, 1)
+      //       // setCollision(oc, 1)
+
+      //       // if (ocollision === 0 && collision === 0) {
+      //       // setSpeed(c, new_speed)
+      //       // setSpeed(oc, o_new_speed)
+      //       // }
+
+      //       // setTimeout(() => {
+      //       //   setCollision(c, 0)
+      //       //   setCollision(oc, 0)
+      //       // }, 3000)
+      //     }
+      //   }
+      // })
     })
   }
 
@@ -235,17 +282,17 @@ const Obstacle = () => {
     setInterval(() => {
       const { positions } = getRanking()
       const first_car = Math.max(...positions)
-      const spawn_distance = getRandomDigit(150, 350)
+      const spawn_distance = getRandomDigit(250, 350)
       const spawn_position = getPosition('terrain')
 
       const final_spawn_position =
-        first_car > spawn_position ? first_car + 1000 : spawn_position
+        first_car > spawn_position ? first_car + 2000 : spawn_position
 
       const final_distance = final_spawn_position + spawn_distance
 
       spawnObstacle(final_distance)
       setPosition('terrain', final_distance)
-    }, 500)
+    }, 300)
 
     return () => {
       clearInterval(carLoop)

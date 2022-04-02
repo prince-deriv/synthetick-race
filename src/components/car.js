@@ -116,8 +116,8 @@ const Car = () => {
       'car-enemy': PLAYER_DEFAULT_POS,
       'car-enemy-2': -80,
       'car-enemy-3': -80,
-      'car-enemy-4': -160,
-      'car-enemy-5': -160
+      'car-enemy-4': -170,
+      'car-enemy-5': -170
     }
 
     Cars.forEach(c => {

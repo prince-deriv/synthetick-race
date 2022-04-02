@@ -5,7 +5,7 @@ import TerrainBg from 'images/terrain.jpg'
 import { Car, Obstacle } from 'components'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { speedState, distanceState, enemyDistanceState } from 'atoms'
-import { setDistance } from 'helpers/utils'
+import { getCarCoordinates, setDistance } from 'helpers/utils'
 
 const Land = styled.div`
   position: absolute;
