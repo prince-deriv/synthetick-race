@@ -1,18 +1,18 @@
-import React, { useRef, useEffect, useState } from 'react'
-import styled from 'styled-components'
-import 'styles/global.scss'
-import TerrainBg from 'images/terrain.jpg'
-import { Car, Obstacle } from 'components'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { speedState, distanceState, enemyDistanceState } from 'atoms'
-import { getCarCoordinates, setDistance } from 'helpers/utils'
+import React, { useRef, useEffect, useState } from "react";
+import styled from "styled-components";
+import "styles/global.scss";
+import TerrainBg from "images/terrain.jpg";
+import { Car, Indicator, Obstacle } from "components";
+import { useRecoilState } from "recoil";
+import { speedState } from "atoms";
+import { setDistance } from "helpers/utils";
 
 const Land = styled.div`
   position: absolute;
   top: 0px;
   width: 100%;
   height: 100%;
-`
+`;
 
 const Terrain = styled.div`
   position: absolute;
@@ -28,67 +28,69 @@ const Terrain = styled.div`
   background-position: 0 0;
   z-index: 1;
 }
-`
+`;
 
 // markup
 const Game = () => {
-  const terrain = useRef()
-  const [speed, setCarSpeed] = useRecoilState(speedState)
+  const terrain = useRef();
+  const [speed, setCarSpeed] = useRecoilState(speedState);
   const [data, setData] = useState({
-    speed: 0
-  })
-
-  const enemy_distance = useRecoilValue(enemyDistanceState)
+    speed: 0,
+  });
 
   useEffect(() => {
-    const current = terrain.current
-    let terrain_move
+    const current = terrain.current;
+    let terrain_move;
     if (current) {
       terrain_move = setInterval(() => {
-        move()
-      }, 10)
+        move();
+      }, 10);
     }
 
-    return () => clearInterval(terrain_move)
-  }, [])
+    return () => clearInterval(terrain_move);
+  }, []);
 
   useEffect(() => {
-    const current = terrain.current
-    const final_speed = speed < 0 ? 1 : speed
-    current.setAttribute('speed', final_speed)
-  }, [speed])
+    const current = terrain.current;
+    const final_speed = speed < 0 ? 1 : speed;
+    current.setAttribute("speed", final_speed);
+  }, [speed]);
 
   const move = () => {
-    const player = document.getElementById('car')
-    const current = terrain.current
-    const current_speed = player.getAttribute('speed')
-    const bpy = current.style.backgroundPositionY
+    const player = document.getElementById("car");
+    const current = terrain.current;
+    const current_speed = player.getAttribute("speed");
+    const bpy = current.style.backgroundPositionY;
 
-    const speed = !current_speed ? 0 : parseFloat(current_speed)
-    const posY = bpy === '' ? 0 : parseFloat(bpy)
+    const speed = !current_speed ? 0 : parseFloat(current_speed);
+    const posY = bpy === "" ? 0 : parseFloat(bpy);
 
-    const new_bpy = posY + speed
+    const new_bpy = posY + speed;
 
-    current.style.backgroundPositionY = `${new_bpy}px`
-    player.setAttribute('speed', speed)
+    current.style.backgroundPositionY = `${new_bpy}px`;
+    player.setAttribute("speed", speed);
 
-    const new_data = { ...data }
-    new_data.speed = parseInt(speed * 30)
+    const new_data = { ...data };
+    new_data.speed = parseInt(speed * 30);
 
-    setDistance('terrain', new_bpy)
-    setCarSpeed(speed)
-    setData(new_data)
-  }
+    setDistance("terrain", new_bpy);
+    setCarSpeed(speed);
+    setData(new_data);
+  };
 
   return (
     <Land>
-      <Terrain ref={terrain} id='terrain' />
+      <Terrain ref={terrain} id="terrain">
+        <Indicator />
+      </Terrain>
       <Obstacle />
       <Car />
       <h1>Speed: {data.speed}km/h</h1>
-      <h1>Enemy: {enemy_distance.toFixed(2)}M</h1>
+      <h1>
+        Place: <strong id="place"></strong>
+      </h1>
     </Land>
-  )
-}
+  );
+};
 
-export default Game
+export default Game;

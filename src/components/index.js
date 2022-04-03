@@ -1,4 +1,5 @@
-import Car from './car'
-import Obstacle from './obstacle'
+import Car from "./car";
+import Obstacle from "./obstacle";
+import Indicator from "./indicator";
 
-export { Car, Obstacle }
+export { Car, Obstacle, Indicator };
