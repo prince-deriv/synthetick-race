@@ -22,6 +22,7 @@ const LineContainer = styled.div`
   right: 100px;
   transform: translateY(-50%);
   text-align: center;
+  overflow: hidden;
 `;
 const Line = styled.div`
   height: 100%;
@@ -31,12 +32,13 @@ const Line = styled.div`
 `;
 
 const FinishLine = styled.img`
-  border-radius: 100%;
-  height: 30px;
+  //   border-radius: 100%;
+  height: 20px;
   width: 30px;
   overflow: hidden;
   object-fit: cover;
   position: absolute;
+  top: -10px;
 `;
 
 const MiniCar = styled.img`

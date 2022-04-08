@@ -7,6 +7,8 @@ import CarEnemyImage2 from "images/cars/car-yellow.png";
 import CarEnemyImage3 from "images/cars/car-green.png";
 import CarEnemyImage4 from "images/cars/car-pink.png";
 import CarEnemyImage5 from "images/cars/car-cyan.png";
+import Boost from "images/effects/boost.png";
+import Shield from "images/effects/shield.png";
 import { useKeyPress } from "helpers/use-key-press";
 import {
   carMove,
@@ -15,11 +17,13 @@ import {
   getState,
   setAcceleration,
   setLane,
+  setName,
   setPosition,
   setSkin,
   setSpeed,
   setSrc,
   setTopSpeed,
+  shuffle,
 } from "helpers/utils";
 
 export const PLAYER_DEFAULT_POS = 20;
@@ -29,6 +33,7 @@ export const CAR_STATUS = {
 };
 
 export const MAX_DISTANCE = 100000;
+// export const MAX_DISTANCE = 10000;
 
 const CarContainer = styled.div`
   position: absolute;
@@ -42,13 +47,44 @@ const CarContainer = styled.div`
 }
 `;
 
-const CarBox = styled.img`
+const CarBox = styled.div`
   height: 80px;
-  width: auto;
+  width: 42px;
   position: absolute;
   left: 10px;
   bottom: ${PLAYER_DEFAULT_POS}px;
   transition: left 0.3s ease-in, transform 0.1s ease-out; 
+  background-size: 100%;
+  background-repeat: no-repeat;
+
+  &[state="bonus"]{
+    &:before {
+      content: " ";
+      background: url(${Shield});
+      width: 120px;
+      height: 120px;
+      background-size: contain;
+      position: absolute;
+      background-repeat: no-repeat;
+      top: -24px;
+      opacity: 0.7;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &:after {
+      content: " ";
+      background: url(${Boost});
+      width: 50px;
+      height: 50px;
+      background-size: contain;
+      position: absolute;
+      background-repeat: no-repeat;
+      bottom: -45px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
 
   &.right-turn {
     transform: rotate(12deg);
@@ -96,6 +132,40 @@ export const Cars = [
   "car-enemy-5",
 ];
 
+const pl_names = [
+  "Vijayasree",
+  "Hubert",
+  "Akmal",
+  "Yauheni",
+  "Mahdiyeh",
+  "Maryia H",
+  "Sean",
+  "Mohammed",
+  "Sanjam",
+  "Nikita K",
+  "Adrienne",
+  "Amina",
+  "Bahar",
+  "Aswathy",
+  "Kevin",
+  "Farrah",
+  "Pavel",
+  "Al-amin",
+  "Bala",
+  "Vinu",
+  "Khalid",
+  "Adam",
+  "Nuri",
+  "Iman",
+  "Hirad",
+  "George",
+  "Niloofar",
+  "Maryia F",
+  "Ashraf",
+  "Nikita Z",
+  "Mitra",
+];
+
 export const EnemyCars = Cars.filter((c) => c != "car");
 
 const Car = () => {
@@ -134,14 +204,32 @@ const Car = () => {
       "car-enemy-5": -200,
     };
 
-    Cars.forEach((c) => {
-      const src = getSrc(c);
+    const names = shuffle(pl_names);
+    const skins = shuffle([
+      CarImage,
+      CarEnemyImage1,
+      CarEnemyImage2,
+      CarEnemyImage3,
+      CarEnemyImage4,
+      CarEnemyImage5,
+    ]);
+
+    Cars.forEach((c, k) => {
+      const src = skins[k];
+      setSrc(c, src);
       setLane(c, car_lanes[c]);
       setPosition(c, car_positions[c]);
       setSpeed(c, 0);
       setSkin(c, src);
       setAcceleration(c, 0.02);
+
       setTopSpeed(c, 5);
+
+      if (c !== "car") {
+        setName(c, names[k]);
+      } else {
+        setName(c, "Player 1");
+      }
     });
 
     setPosition("terrain", 1200);
@@ -154,6 +242,12 @@ const Car = () => {
     let new_speed = null;
 
     const state = getState("car");
+
+    const unmoveable = ["dead", "finished"];
+
+    if (unmoveable.includes(state)) {
+      return false;
+    }
 
     if (state !== CAR_STATUS.dead) {
       if (arrow_right && !debounce) {
@@ -197,12 +291,12 @@ const Car = () => {
 
   return (
     <CarContainer>
-      <CarBox src={CarImage} className={class_name} id="car" />
-      <CarBox src={CarEnemyImage1} id="car-enemy-1" />
-      <CarBox src={CarEnemyImage2} id="car-enemy-2" />
-      <CarBox src={CarEnemyImage3} id="car-enemy-3" />
-      <CarBox src={CarEnemyImage4} id="car-enemy-4" />
-      <CarBox src={CarEnemyImage5} id="car-enemy-5" />
+      <CarBox className={class_name} id="car" />
+      <CarBox id="car-enemy-1" />
+      <CarBox id="car-enemy-2" />
+      <CarBox id="car-enemy-3" />
+      <CarBox id="car-enemy-4" />
+      <CarBox id="car-enemy-5" />
     </CarContainer>
   );
 };
