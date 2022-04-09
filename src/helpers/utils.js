@@ -1,6 +1,27 @@
 import { Cars, CAR_SIZE, CAR_STATUS } from "components/car";
 import Explosion from "images/effects/explosion.gif";
 
+export const shuffle = (array) => {
+  let currentIndex = array.length,
+    randomIndex;
+
+  while (currentIndex != 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+};
+
+export const isInvulnerable = (id) => {
+  return getState(id) === "bonus";
+};
+
 export const getRandomDigit = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
@@ -12,6 +33,7 @@ export const getSpeed = (id) => {
 
 export const getPosition = (id) => {
   const car = document.getElementById(id);
+
   const pos = parseFloat(car.getAttribute("position"));
   return isNaN(pos) ? 0 : pos;
 };
@@ -27,6 +49,12 @@ export const getAcceleration = (id) => {
   const car = document.getElementById(id);
   return parseFloat(car.getAttribute("acc"));
 };
+
+export const getLuckyNumber = (id) => {
+  const car = document.getElementById(id);
+  return parseFloat(car.getAttribute("lucky_number"));
+};
+
 export const getTopSpeed = (id) => {
   const car = document.getElementById(id);
   return parseFloat(car.getAttribute("top-speed"));
@@ -37,6 +65,11 @@ export const getState = (id) => {
   return car.getAttribute("state");
 };
 
+export const getName = (id) => {
+  const car = document.getElementById(id);
+  return car.getAttribute("pl-name");
+};
+
 export const getRef = (id) => {
   const car = document.getElementById(id);
   return car.getAttribute("ref");
@@ -44,7 +77,7 @@ export const getRef = (id) => {
 
 export const getSrc = (id) => {
   const car = document.getElementById(id);
-  return car.getAttribute("src");
+  return car.style.backgroundImage;
 };
 
 export const getSkin = (id) => {
@@ -76,6 +109,13 @@ export const getCollision = (id) => {
   return isNaN(collision) ? 0 : collision;
 };
 
+export const getCollided = (id) => {
+  const element = document.getElementById(id);
+  const collided = parseInt(element.getAttribute("collided"));
+
+  return isNaN(collided) ? 0 : collided;
+};
+
 export const setSpeed = (id, speed) => {
   const final_speed = speed < 0 ? 0 : speed;
 
@@ -86,12 +126,16 @@ export const setPosition = (id, pos) => {
   document.getElementById(id).setAttribute("position", pos);
 };
 
+export const setLuckyNumber = (id, lucky_number) => {
+  document.getElementById(id).setAttribute("lucky_number", lucky_number);
+};
+
 export const setSkin = (id, skin) => {
   document.getElementById(id).setAttribute("skin", skin);
 };
 
 export const setSrc = (id, src) => {
-  document.getElementById(id).setAttribute("src", src);
+  document.getElementById(id).style.backgroundImage = `url(${src})`;
 };
 
 export const setClass = (id, class_name) => {
@@ -100,6 +144,10 @@ export const setClass = (id, class_name) => {
 
 export const setLane = (id, lane) => {
   document.getElementById(id).setAttribute("lane", lane);
+};
+
+export const setCollided = (id, collided) => {
+  document.getElementById(id).setAttribute("collided", collided);
 };
 
 export const setBottom = (id, bottom) => {
@@ -112,6 +160,10 @@ export const setDistance = (id, distance) => {
 
 export const setRef = (id, ref) => {
   document.getElementById(id).setAttribute("ref", ref);
+};
+
+export const setName = (id, name) => {
+  document.getElementById(id).setAttribute("pl-name", name);
 };
 
 export const setState = (id, state) => {
@@ -133,16 +185,28 @@ export const setTopSpeed = (id, top_speed) => {
   document.getElementById(id).setAttribute("top-speed", top_speed);
 };
 
-export const kill = (id) => {
-  setSpeed(id, 0);
-  setState(id, CAR_STATUS.dead);
-  setSrc(id, Explosion);
+export const show = (id) => {
+  document.getElementById(id).style.opacity = 1;
+};
 
-  setTimeout(() => {
-    const skin = getSkin(id);
-    setSrc(id, skin);
-    setState(id, "");
-  }, 1000);
+export const hide = (id) => {
+  document.getElementById(id).style.opacity = 0;
+};
+
+export const kill = (id) => {
+  const state = getState(id);
+
+  if (state !== "finished") {
+    setSpeed(id, 0);
+    setState(id, CAR_STATUS.dead);
+    setSrc(id, Explosion);
+
+    setTimeout(() => {
+      const skin = getSkin(id);
+      setSrc(id, skin);
+      setState(id, "");
+    }, 1000);
+  }
 };
 
 export const carMove = (id, lane) => {
@@ -209,6 +273,7 @@ export const getCarRank = (c) => {
   const places = ["1st", "2nd", "3rd", "4th", "5th", "6th"];
   const key = arraySearch(car_order, c);
   const place = places[key];
+
   return { key, place };
 };
 

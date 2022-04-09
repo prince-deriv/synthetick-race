@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Finish from "images/obstacles/finish.jpeg";
-import { Cars, MAX_DISTANCE } from "./car";
-import {
-  getLandPosition,
-  getPosition,
-  getRef,
-  getSkin,
-  setBottom,
-  setPosition,
-  setRef,
-} from "helpers/utils";
+import { Cars } from "./car";
+import { getSkin, setRef } from "helpers/utils";
+import { gameState } from "atoms";
+import { useRecoilValue } from "recoil";
 
 const LineContainer = styled.div`
   display: flex;
@@ -22,6 +16,7 @@ const LineContainer = styled.div`
   right: 100px;
   transform: translateY(-50%);
   text-align: center;
+  overflow: hidden;
 `;
 const Line = styled.div`
   height: 100%;
@@ -31,12 +26,13 @@ const Line = styled.div`
 `;
 
 const FinishLine = styled.img`
-  border-radius: 100%;
-  height: 30px;
+  //   border-radius: 100%;
+  height: 20px;
   width: 30px;
   overflow: hidden;
   object-fit: cover;
   position: absolute;
+  top: -10px;
 `;
 
 const MiniCar = styled.img`
@@ -49,10 +45,11 @@ const MiniCar = styled.img`
 `;
 
 const Indicator = () => {
+  const game_state = useRecoilValue(gameState);
   const [is_ready, setReady] = useState(false);
   useEffect(() => {
-    setReady(true);
-  }, []);
+    if (game_state === "race") setReady(true);
+  }, [game_state]);
 
   useEffect(() => {
     if (is_ready) {
