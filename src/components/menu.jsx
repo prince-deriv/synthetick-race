@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import {
   carColorState,
   gameState,
   luckyNumberState,
   nameState,
-  symbolState,
-} from "atoms";
-import { useRecoilState } from "recoil";
+  symbolState
+} from 'atoms'
+import { useRecoilState } from 'recoil'
 
-import { car_images } from "./car";
+import { car_images } from './car'
 
 const MenuBoard = styled.div`
   position: absolute;
@@ -24,8 +24,8 @@ const MenuBoard = styled.div`
   font-family: Digital7;
   z-index: 10;
   transition: opacity 0.2s ease-in;
-  opacity: ${(props) => (props.show ? "1" : "0")};
-`;
+  opacity: ${props => (props.show ? '1' : '0')};
+`
 
 const MenuItem = styled.div`
   display: flex;
@@ -43,7 +43,7 @@ const MenuItem = styled.div`
     box-shadow: 0px 0px 10px cyan;
     color: #000;
   }
-`;
+`
 
 const Dropdown = styled.div`
   display: flex;
@@ -118,7 +118,7 @@ const Dropdown = styled.div`
       }
     }
   }
-`;
+`
 
 export const FooterMenu = styled.div`
   display: flex;
@@ -143,100 +143,100 @@ export const FooterMenu = styled.div`
       color: #000;
     }
   }
-`;
+`
 
-const startGame = (setGameState) => {
-  setGameState("race");
-};
+const startGame = setGameState => {
+  setGameState('race')
+}
 
-const openSettings = (setGameState) => {
-  setGameState("settings");
-};
+const openSettings = setGameState => {
+  setGameState('settings')
+}
 
 const menu_list = [
   {
-    title: "Start Game",
-    action: startGame,
+    title: 'Start Game',
+    action: startGame
   },
   {
-    title: "Settings",
-    action: openSettings,
-  },
+    title: 'Settings',
+    action: openSettings
+  }
   //   {
   //     title: "Info",
   //     action: null,
   //   },
-];
+]
 
 export const symbols = [
   {
-    name: "Volatility 10 Index",
-    symbol: "R_10",
+    name: 'Volatility 10 Index',
+    symbol: 'R_10'
   },
   {
-    name: "Volatility 25  Index",
-    symbol: "R_25",
+    name: 'Volatility 25  Index',
+    symbol: 'R_25'
   },
 
   {
-    name: "Volatility 50 Index",
-    symbol: "R_50",
+    name: 'Volatility 50 Index',
+    symbol: 'R_50'
   },
 
   {
-    name: "Volatility 75 Index",
-    symbol: "R_75",
+    name: 'Volatility 75 Index',
+    symbol: 'R_75'
   },
 
   {
-    name: "Volatility 100 Index",
-    symbol: "R_100",
-  },
-];
+    name: 'Volatility 100 Index',
+    symbol: 'R_100'
+  }
+]
 
 const Menu = () => {
-  const [game_state, setGameState] = useRecoilState(gameState);
-  const [car_color, setCarColor] = useRecoilState(carColorState);
-  const [lucky_number, setLuckyNumber] = useRecoilState(luckyNumberState);
-  const [player_name, setPlayerName] = useRecoilState(nameState);
-  const [symbol, setSymbol] = useRecoilState(symbolState);
-  const [show, setShow] = useState(false);
+  const [game_state, setGameState] = useRecoilState(gameState)
+  const [car_color, setCarColor] = useRecoilState(carColorState)
+  const [lucky_number, setLuckyNumber] = useRecoilState(luckyNumberState)
+  const [player_name, setPlayerName] = useRecoilState(nameState)
+  const [symbol, setSymbol] = useRecoilState(symbolState)
+  const [show, setShow] = useState(false)
 
   useEffect(() => {
-    const data_player_name = localStorage["player_name"];
-    const data_car_color = localStorage["car_color"]
-      ? parseInt(localStorage["car_color"])
-      : null;
-    const data_lucky_number = localStorage["lucky_number"]
-      ? parseInt(localStorage["lucky_number"])
-      : null;
-    const data_symbol = localStorage["symbol"]
-      ? parseInt(localStorage["symbol"])
-      : null;
+    const data_player_name = localStorage['player_name']
+    const data_car_color = localStorage['car_color']
+      ? parseInt(localStorage['car_color'])
+      : null
+    const data_lucky_number = localStorage['lucky_number']
+      ? parseInt(localStorage['lucky_number'])
+      : null
+    const data_symbol = localStorage['symbol']
+      ? parseInt(localStorage['symbol'])
+      : null
 
     if (data_player_name) {
-      setPlayerName(data_player_name);
+      setPlayerName(data_player_name)
     }
     if (data_car_color !== null) {
-      setCarColor(data_car_color);
+      setCarColor(data_car_color)
     }
     if (data_lucky_number !== null) {
-      setLuckyNumber(data_lucky_number);
+      setLuckyNumber(data_lucky_number)
     }
     if (data_symbol !== null) {
-      setSymbol(data_symbol);
+      setSymbol(data_symbol)
     }
-  }, [document]);
+  }, [window])
 
   useEffect(() => {
-    const show_on = ["home", "settings"];
+    const show_on = ['home', 'settings']
 
-    setShow(() => show_on.includes(game_state));
-  }, [game_state]);
+    setShow(() => show_on.includes(game_state))
+  }, [game_state])
 
   return (
     <MenuBoard show={show}>
-      {game_state === "home" &&
+      {game_state === 'home' &&
         menu_list.map(({ title, action }, key) => (
           <MenuItem
             key={`menu-${key}`}
@@ -246,46 +246,46 @@ const Menu = () => {
           </MenuItem>
         ))}
 
-      {game_state === "settings" && (
+      {game_state === 'settings' && (
         <>
           <Dropdown>
-            <span className="title">Name</span>
+            <span className='title'>Name</span>
             <input
-              type="text"
+              type='text'
               value={player_name}
-              onChange={(e) => {
-                const name = e.target.value;
-                setPlayerName(name);
-                localStorage.setItem("player_name", name);
+              onChange={e => {
+                const name = e.target.value
+                setPlayerName(name)
+                localStorage.setItem('player_name', name)
               }}
             />
           </Dropdown>
           <Dropdown>
-            <span className="title">Car Color</span>
-            <div className="car-option">
+            <span className='title'>Car Color</span>
+            <div className='car-option'>
               {car_images.map((i, k) => (
                 <img
-                  className={car_color === k ? "active" : ""}
+                  className={car_color === k ? 'active' : ''}
                   key={`car-image-${k}`}
                   src={i}
                   onClick={() => {
-                    setCarColor(k);
-                    localStorage.setItem("car_color", k);
+                    setCarColor(k)
+                    localStorage.setItem('car_color', k)
                   }}
                 />
               ))}
             </div>
           </Dropdown>
           <Dropdown>
-            <span className="title">Lucky Last Digit</span>
-            <div className="box-container">
+            <span className='title'>Lucky Last Digit</span>
+            <div className='box-container'>
               {Array.from(Array(10).keys()).map((l, k) => (
                 <span
                   key={`ln-${k}`}
-                  className={`box-option ${lucky_number === l ? "active" : ""}`}
+                  className={`box-option ${lucky_number === l ? 'active' : ''}`}
                   onClick={() => {
-                    setLuckyNumber(l);
-                    localStorage.setItem("lucky_number", l);
+                    setLuckyNumber(l)
+                    localStorage.setItem('lucky_number', l)
                   }}
                 >
                   {l}
@@ -294,13 +294,13 @@ const Menu = () => {
             </div>
           </Dropdown>
           <Dropdown>
-            <span className="title">Synthetic Market</span>
+            <span className='title'>Synthetic Market</span>
             <select
               value={symbol}
-              onChange={(e) => {
-                const symbol = e.target.value;
-                setSymbol(symbol);
-                localStorage.setItem("symbol", symbol);
+              onChange={e => {
+                const symbol = e.target.value
+                setSymbol(symbol)
+                localStorage.setItem('symbol', symbol)
               }}
             >
               {symbols.map(({ name }, k) => (
@@ -311,14 +311,14 @@ const Menu = () => {
             </select>
           </Dropdown>
           <FooterMenu>
-            <span className="button" onClick={() => setGameState("home")}>
+            <span className='button' onClick={() => setGameState('home')}>
               ← Back
             </span>
           </FooterMenu>
         </>
       )}
     </MenuBoard>
-  );
-};
+  )
+}
 
-export default Menu;
+export default Menu
