@@ -162,35 +162,36 @@ const menu_list = [
     title: 'Settings',
     action: openSettings
   }
-  //   {
-  //     title: "Info",
-  //     action: null,
-  //   },
 ]
 
 export const symbols = [
   {
     name: 'Volatility 10 Index',
-    symbol: 'R_10'
+    symbol: 'R_10',
+    decimal: 3
   },
   {
     name: 'Volatility 25  Index',
-    symbol: 'R_25'
+    symbol: 'R_25',
+    decimal: 3
   },
 
   {
     name: 'Volatility 50 Index',
-    symbol: 'R_50'
+    symbol: 'R_50',
+    decimal: 4
   },
 
   {
     name: 'Volatility 75 Index',
-    symbol: 'R_75'
+    symbol: 'R_75',
+    decimal: 4
   },
 
   {
     name: 'Volatility 100 Index',
-    symbol: 'R_100'
+    symbol: 'R_100',
+    decimal: 2
   }
 ]
 
