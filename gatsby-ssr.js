@@ -1,6 +1,8 @@
-import React from "react";
-import { RecoilRoot } from "recoil";
+import React from 'react'
+import { RecoilRoot } from 'recoil'
 
-exports.wrapRootElement = ({ element }) => {
-  return <RecoilRoot>{element}</RecoilRoot>;
-};
+const wrapRootElement = ({ element }) => {
+  return <RecoilRoot>{element}</RecoilRoot>
+}
+
+export default wrapRootElement
