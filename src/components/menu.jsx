@@ -155,7 +155,7 @@ const openSettings = (setGameState) => {
 
 const menu_list = [
   {
-    title: "New Game",
+    title: "Start Game",
     action: startGame,
   },
   {
@@ -170,60 +170,27 @@ const menu_list = [
 
 export const symbols = [
   {
-    name: "Volatility 10 (1s) Index",
-    symbol: "1HZ10V",
-  },
-  {
     name: "Volatility 10 Index",
-    symbol: "R10",
-  },
-  {
-    name: "Volatility 25 (1s) Index",
-    symbol: "1HZ25V",
+    symbol: "R_10",
   },
   {
     name: "Volatility 25  Index",
     symbol: "R_25",
   },
-  {
-    name: "Volatility 50 (1s) Index",
-    symbol: "1HZ50V",
-  },
+
   {
     name: "Volatility 50 Index",
     symbol: "R_50",
   },
-  {
-    name: "Volatility 75 (1s) Index",
-    symbol: "1HZ75V",
-  },
+
   {
     name: "Volatility 75 Index",
     symbol: "R_75",
   },
-  {
-    name: "Volatility 100 (1s) Index",
-    symbol: "1HZ100V",
-  },
+
   {
     name: "Volatility 100 Index",
     symbol: "R_100",
-  },
-  {
-    name: "Volatility 200 (1s) Index",
-    symbol: "1HZ200V",
-  },
-  {
-    name: "Volatility 200 Index",
-    symbol: "R_200",
-  },
-  {
-    name: "Volatility 300 (1s) Index",
-    symbol: "1HZ300V",
-  },
-  {
-    name: "Volatility 300 Index",
-    symbol: "R_300",
   },
 ];
 
@@ -234,6 +201,32 @@ const Menu = () => {
   const [player_name, setPlayerName] = useRecoilState(nameState);
   const [symbol, setSymbol] = useRecoilState(symbolState);
   const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const data_player_name = localStorage["player_name"];
+    const data_car_color = localStorage["car_color"]
+      ? parseInt(localStorage["car_color"])
+      : null;
+    const data_lucky_number = localStorage["lucky_number"]
+      ? parseInt(localStorage["lucky_number"])
+      : null;
+    const data_symbol = localStorage["symbol"]
+      ? parseInt(localStorage["symbol"])
+      : null;
+
+    if (data_player_name) {
+      setPlayerName(data_player_name);
+    }
+    if (data_car_color !== null) {
+      setCarColor(data_car_color);
+    }
+    if (data_lucky_number !== null) {
+      setLuckyNumber(data_lucky_number);
+    }
+    if (data_symbol !== null) {
+      setSymbol(data_symbol);
+    }
+  }, [document]);
 
   useEffect(() => {
     const show_on = ["home", "settings"];
@@ -260,7 +253,11 @@ const Menu = () => {
             <input
               type="text"
               value={player_name}
-              onChange={(e) => setPlayerName(e.target.value)}
+              onChange={(e) => {
+                const name = e.target.value;
+                setPlayerName(name);
+                localStorage.setItem("player_name", name);
+              }}
             />
           </Dropdown>
           <Dropdown>
@@ -271,7 +268,10 @@ const Menu = () => {
                   className={car_color === k ? "active" : ""}
                   key={`car-image-${k}`}
                   src={i}
-                  onClick={() => setCarColor(k)}
+                  onClick={() => {
+                    setCarColor(k);
+                    localStorage.setItem("car_color", k);
+                  }}
                 />
               ))}
             </div>
@@ -283,7 +283,10 @@ const Menu = () => {
                 <span
                   key={`ln-${k}`}
                   className={`box-option ${lucky_number === l ? "active" : ""}`}
-                  onClick={() => setLuckyNumber(l)}
+                  onClick={() => {
+                    setLuckyNumber(l);
+                    localStorage.setItem("lucky_number", l);
+                  }}
                 >
                   {l}
                 </span>
@@ -292,7 +295,14 @@ const Menu = () => {
           </Dropdown>
           <Dropdown>
             <span className="title">Synthetic Market</span>
-            <select value={symbol} onChange={(e) => setSymbol(e.target.value)}>
+            <select
+              value={symbol}
+              onChange={(e) => {
+                const symbol = e.target.value;
+                setSymbol(symbol);
+                localStorage.setItem("symbol", symbol);
+              }}
+            >
               {symbols.map(({ name }, k) => (
                 <option key={`market-${k}`} value={k}>
                   {name}
