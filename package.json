@@ -4,6 +4,9 @@
   "private": true,
   "description": "tick-race",
   "author": "Prince Coching",
+  "engines": {
+    "node": "14.18.1"
+  },
   "keywords": [
     "gatsby"
   ],
