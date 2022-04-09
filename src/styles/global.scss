@@ -2,9 +2,9 @@ body {
   background: #91C573;
   overflow: hidden;
   color: white;
-// cursor: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 512 512'%3e%3cg transform='rotate(45 256 256)'%3e%3crect id='r' x='16' y='216' width='480' height='80' rx='14'/%3e%3cuse href='%23r' transform='rotate(90 256 256)'/%3e%3c/g%3e%3c/svg%3e") 16 16, pointer;
+  font-family: Digital7;
 cursor:  url("data:image/svg+xml,%3Csvg width='64' height='64' viewbox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' fill='none' r='10' stroke='%230000007d' stroke-width='2'%3E%3Canimate attributeName='r' from='8' to='20' dur='1.5s' begin='0s' repeatCount='indefinite'/%3E%3Canimate attributeName='opacity' from='1' to='0' dur='1.5s' begin='0s' repeatCount='indefinite'/%3E%3C/circle%3E%3Ccircle cx='20' cy='20' fill='%230000007d' r='10'/%3E%3C/svg%3E%0A") 16 16, pointer;
-  // cursor: zoom-out;
+
 }
 
 @font-face {
@@ -22,6 +22,29 @@ cursor:  url("data:image/svg+xml,%3Csvg width='64' height='64' viewbox='0 0 40 4
   background-size: 100%;
   background-repeat: no-repeat;
   transition: left 0.3s ease-in, transform 0.1s ease-out; 
+
+  p {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // border-radius: 2px;
+    width: 20px;
+    height: 25px;
+    background: #00000054;
+    color: #fff;
+    font-size: 15px;
+    z-index: 2;
+    left: 11px;
+    top: 20px;
+    font-family: Digital7;
+  }
+
+  &[state="dead"]{
+    p {
+      display: none;
+    }
+  }
 
   &[state="bonus"]{
     &:before {
@@ -67,6 +90,8 @@ cursor:  url("data:image/svg+xml,%3Csvg width='64' height='64' viewbox='0 0 40 4
   &.left-move {
     left: 10px;
   }
+
+  
 }
 
 #indicator-car {
@@ -133,4 +158,16 @@ cursor:  url("data:image/svg+xml,%3Csvg width='64' height='64' viewbox='0 0 40 4
 @keyframes fade {
   0%,100% { opacity: 0 }
   50% { opacity: 1 }
+}
+
+.twitter-picker  {
+  input {
+    display: none;
+  }
+
+  // div:nth-child(3){
+  //   div {
+  //     display: none;
+  //   }
+  // }
 }

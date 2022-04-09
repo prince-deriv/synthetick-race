@@ -25,10 +25,40 @@ const enemyDistanceState = atom({
   default: 0,
 });
 
+const gameState = atom({
+  key: "game_state",
+  default: "home",
+});
+
+const carColorState = atom({
+  key: "car_color",
+  default: 0,
+});
+
+const luckyNumberState = atom({
+  key: "lucky_number",
+  default: 0,
+});
+
+const symbolState = atom({
+  key: "symbol",
+  default: 0,
+});
+
+const nameState = atom({
+  key: "player_name",
+  default: "Player 1",
+});
+
 export {
   speedState,
   distanceState,
   carLaneState,
   collisionState,
   enemyDistanceState,
+  gameState,
+  carColorState,
+  luckyNumberState,
+  symbolState,
+  nameState,
 };

@@ -10,13 +10,15 @@ import CarEnemyImage5 from "images/cars/car-cyan.png";
 import Boost from "images/effects/boost.png";
 import Shield from "images/effects/shield.png";
 import { useKeyPress } from "helpers/use-key-press";
+import { carColorState, gameState, luckyNumberState, nameState } from "atoms";
+import { useRecoilValue } from "recoil";
 import {
-  carMove,
+  getRandomDigit,
   getSpeed,
-  getSrc,
   getState,
   setAcceleration,
   setLane,
+  setLuckyNumber,
   setName,
   setPosition,
   setSkin,
@@ -31,6 +33,15 @@ export const CAR_SIZE = 80;
 export const CAR_STATUS = {
   dead: "dead",
 };
+
+export const car_images = [
+  CarImage,
+  CarEnemyImage1,
+  CarEnemyImage2,
+  CarEnemyImage3,
+  CarEnemyImage4,
+  CarEnemyImage5,
+];
 
 export const MAX_DISTANCE = 100000;
 // export const MAX_DISTANCE = 10000;
@@ -169,6 +180,11 @@ const pl_names = [
 export const EnemyCars = Cars.filter((c) => c != "car");
 
 const Car = () => {
+  const game_state = useRecoilValue(gameState);
+  const car_color = useRecoilValue(carColorState);
+  const lucky_number = useRecoilValue(luckyNumberState);
+  const player_name = useRecoilValue(nameState);
+
   const arrow_left = useKeyPress("ArrowLeft");
   const arrow_right = useKeyPress("ArrowRight");
   const arrow_down = useKeyPress("ArrowDown");
@@ -178,7 +194,7 @@ const Car = () => {
   const turn_reset = 300;
 
   const handleClassName = (cn) => {
-    const default_class = "";
+    const default_class = "car";
 
     setClassName(`${default_class} ${cn}`);
   };
@@ -205,98 +221,117 @@ const Car = () => {
     };
 
     const names = shuffle(pl_names);
-    const skins = shuffle([
-      CarImage,
-      CarEnemyImage1,
-      CarEnemyImage2,
-      CarEnemyImage3,
-      CarEnemyImage4,
-      CarEnemyImage5,
-    ]);
+    const skins = shuffle(car_images.filter((e, k) => k !== car_color));
+
+    skins.unshift(car_images[car_color]);
 
     Cars.forEach((c, k) => {
       const src = skins[k];
+      let ln = getRandomDigit(0, 9);
+
+      if (c === "car") {
+        ln = lucky_number;
+      }
+
       setSrc(c, src);
       setLane(c, car_lanes[c]);
       setPosition(c, car_positions[c]);
       setSpeed(c, 0);
       setSkin(c, src);
-      setAcceleration(c, 0.02);
+      setAcceleration(c, 0.05);
+      setLuckyNumber(c, ln);
 
-      setTopSpeed(c, 5);
+      setTopSpeed(c, 6);
+
+      // Number Tag
+      document.getElementById(c).childNodes[0].innerHTML = ln;
 
       if (c !== "car") {
         setName(c, names[k]);
       } else {
-        setName(c, "Player 1");
+        setName(c, player_name);
       }
     });
-
-    setPosition("terrain", 1200);
-  }, []);
+  }, [game_state, lucky_number, car_color]);
 
   useEffect(() => {
-    const player = document.getElementById("car");
-    const speed = getSpeed("car");
-    const speed_deduction = speed * 0.1;
-    let new_speed = null;
+    if (game_state === "race") {
+      const player = document.getElementById("car");
+      const speed = getSpeed("car");
+      const speed_deduction = speed * 0.1;
+      let new_speed = null;
 
-    const state = getState("car");
+      const state = getState("car");
 
-    const unmoveable = ["dead", "finished"];
+      const unmoveable = ["dead", "finished"];
 
-    if (unmoveable.includes(state)) {
-      return false;
-    }
-
-    if (state !== CAR_STATUS.dead) {
-      if (arrow_right && !debounce) {
-        setDebounce(true);
-        handleClassName("right-move right-turn");
-
-        new_speed = speed - speed_deduction;
-        player.setAttribute("speed", new_speed);
-
-        setTimeout(() => {
-          handleClassName("right-move");
-          setDebounce(false);
-          player.setAttribute("lane", 1);
-        }, turn_reset);
-
-        // carMove("car", 1);
+      if (unmoveable.includes(state)) {
+        return false;
       }
 
-      if (arrow_left && !debounce) {
-        setDebounce(true);
-        handleClassName("left-move left-turn");
+      if (state !== CAR_STATUS.dead) {
+        if (arrow_right && !debounce) {
+          setDebounce(true);
+          handleClassName("right-move right-turn");
 
-        new_speed = speed - speed_deduction;
-        player.setAttribute("speed", new_speed);
+          new_speed = speed - speed_deduction;
+          player.setAttribute("speed", new_speed);
 
-        setTimeout(() => {
-          handleClassName("left-move");
-          setDebounce(false);
-          player.setAttribute("lane", 0);
-        }, turn_reset);
-        // carMove("car", 0);
-      }
+          setTimeout(() => {
+            handleClassName("right-move");
+            setDebounce(false);
+            player.setAttribute("lane", 1);
+          }, turn_reset);
 
-      if (arrow_down) {
-        new_speed = speed - speed * 0.05;
+          // carMove("car", 1);
+        }
 
-        setSpeed("car", new_speed);
+        if (arrow_left && !debounce) {
+          setDebounce(true);
+          handleClassName("left-move left-turn");
+
+          new_speed = speed - speed_deduction;
+          player.setAttribute("speed", new_speed);
+
+          setTimeout(() => {
+            handleClassName("left-move");
+            setDebounce(false);
+            player.setAttribute("lane", 0);
+          }, turn_reset);
+          // carMove("car", 0);
+        }
+
+        if (arrow_down) {
+          new_speed = speed - speed * 0.05;
+
+          setSpeed("car", new_speed);
+        }
       }
     }
   }, [arrow_right, arrow_left, arrow_down, debounce]);
 
   return (
     <CarContainer>
-      <CarBox className={class_name} id="car" />
-      <CarBox id="car-enemy-1" />
-      <CarBox id="car-enemy-2" />
-      <CarBox id="car-enemy-3" />
-      <CarBox id="car-enemy-4" />
-      <CarBox id="car-enemy-5" />
+      <>
+        <CarBox className={class_name} id="car">
+          <p></p>
+        </CarBox>
+        <CarBox className="car" id="car-enemy-1">
+          <p></p>
+        </CarBox>
+        <CarBox className="car" id="car-enemy-2">
+          <p></p>
+        </CarBox>
+        <CarBox className="car" id="car-enemy-3">
+          <p></p>
+        </CarBox>
+        <CarBox className="car" id="car-enemy-4">
+          <p></p>
+        </CarBox>
+        <CarBox className="car" id="car-enemy-5">
+          <p></p>
+        </CarBox>
+      </>
     </CarContainer>
   );
 };

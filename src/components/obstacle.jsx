@@ -8,6 +8,7 @@ import Barricade from "images/obstacles/barricade.png";
 import Water from "images/obstacles/water.png";
 import Explosion from "images/effects/explosion.gif";
 import Splash from "images/effects/splash.gif";
+import { triggerWS } from "helpers/trade";
 
 import {
   getRandomDigit,
@@ -28,10 +29,8 @@ import {
   getTopSpeed,
   getAcceleration,
   setAcceleration,
-  setTopSpeed,
   getCarRank,
   setState,
-  getDistance,
   setCollided,
   getCollided,
   show,
@@ -45,6 +44,8 @@ import {
   EnemyCars,
   MAX_DISTANCE,
 } from "components/car";
+import { gameState, symbolState } from "atoms";
+import { useRecoilValue } from "recoil";
 
 const ObstacleContainer = styled.div`
   display: flex;
@@ -75,6 +76,8 @@ const createObstacle = ({ src, position, lane, type, id }) => {
 
 const Obstacle = () => {
   const [enemy_move, setEnemyMove] = useState(false);
+  const game_state = useRecoilValue(gameState);
+  const symbol = useRecoilValue(symbolState);
 
   const spawnObstacle = (spawn_distance, x) => {
     const lane = getRandomDigit(0, 1);
@@ -117,11 +120,17 @@ const Obstacle = () => {
     if (total_obstacles <= max_obstacles && position < MAX_DISTANCE) {
       createObstacle({ src, position, lane, type, id });
 
-      const double_spawn = getRandomDigit(0, 1);
+      // const double_spawn = getRandomDigit(0, 1);
 
-      if (type === "oil" && double_spawn) {
-        createObstacle({ src, position, lane: lane === 1 ? 0 : 1, type, id2 });
-      }
+      // if (type === "oil" && double_spawn) {
+      //   createObstacle({
+      //     src,
+      //     position: position + 200,
+      //     lane: lane === 1 ? 0 : 1,
+      //     type,
+      //     id2,
+      //   });
+      // }
     }
   };
 
@@ -284,70 +293,6 @@ const Obstacle = () => {
       }
     });
   };
-
-  useEffect(() => {
-    const car_loop = setInterval(carLoop, 10);
-
-    // Spawn Obstacles
-    for (let x = 1000; x <= MAX_DISTANCE; x++) {
-      const spawn_distance = getRandomDigit(350, 500);
-
-      const obstacle_position = spawn_distance + x;
-
-      x = obstacle_position;
-
-      spawnObstacle(obstacle_position, x);
-    }
-
-    // Render Finish
-    createObstacle({
-      src: Finish,
-      position: MAX_DISTANCE,
-      lane: 0,
-      type: "finish",
-      id: "finish-line",
-    });
-
-    // Speed Bonus
-    setInterval(() => {
-      const lucky_car = getRandomDigit(0, 10);
-
-      Cars.forEach((c, k) => {
-        if (k === lucky_car) {
-          const acc = getAcceleration(c);
-          const top_speed = getTopSpeed(c);
-          const speed = getSpeed(c);
-
-          const { key } = getCarRank(c);
-
-          const speed_bonus = 0.02 * key; // The lower the place the higher the buff
-
-          const new_acc = acc + 0.005;
-          const new_top_speed = top_speed + 0.1;
-          const new_speed = speed + speed * speed_bonus;
-          const state = getState(c);
-
-          if (state !== "finished") {
-            setAcceleration(c, new_acc);
-            setTopSpeed(c, new_top_speed);
-
-            if (state !== "dead") {
-              setSpeed(c, new_speed);
-              setState(c, "bonus");
-            }
-
-            setTimeout(() => {
-              setState(c, "");
-            }, 3000);
-          }
-        }
-      });
-    }, 500);
-
-    return () => {
-      clearInterval(car_loop);
-    };
-  }, []);
 
   const carLoop = () => {
     // Car Speed
@@ -520,6 +465,39 @@ const Obstacle = () => {
     // Ranking
     handleRanking();
   };
+
+  useEffect(() => {
+    if (game_state === "race") {
+      const car_loop = setInterval(carLoop, 10);
+
+      // Spawn Obstacles
+      for (let x = 1000; x <= MAX_DISTANCE; x++) {
+        const spawn_distance = getRandomDigit(500, 600);
+
+        const obstacle_position = spawn_distance + x;
+
+        x = obstacle_position;
+
+        spawnObstacle(obstacle_position, x);
+      }
+
+      // Render Finish
+      createObstacle({
+        src: Finish,
+        position: MAX_DISTANCE,
+        lane: 0,
+        type: "finish",
+        id: "finish-line",
+      });
+
+      // Open Websocket Connection
+      triggerWS(symbol);
+
+      return () => {
+        clearInterval(car_loop);
+      };
+    }
+  }, [game_state]);
 
   return <ObstacleContainer id="obstacle-container" />;
 };

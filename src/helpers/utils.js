@@ -33,6 +33,7 @@ export const getSpeed = (id) => {
 
 export const getPosition = (id) => {
   const car = document.getElementById(id);
+
   const pos = parseFloat(car.getAttribute("position"));
   return isNaN(pos) ? 0 : pos;
 };
@@ -47,6 +48,11 @@ export const getLane = (id) => {
 export const getAcceleration = (id) => {
   const car = document.getElementById(id);
   return parseFloat(car.getAttribute("acc"));
+};
+
+export const getLuckyNumber = (id) => {
+  const car = document.getElementById(id);
+  return parseFloat(car.getAttribute("lucky_number"));
 };
 
 export const getTopSpeed = (id) => {
@@ -118,6 +124,10 @@ export const setSpeed = (id, speed) => {
 
 export const setPosition = (id, pos) => {
   document.getElementById(id).setAttribute("position", pos);
+};
+
+export const setLuckyNumber = (id, lucky_number) => {
+  document.getElementById(id).setAttribute("lucky_number", lucky_number);
 };
 
 export const setSkin = (id, skin) => {
