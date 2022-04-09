@@ -226,7 +226,7 @@ const Menu = () => {
     if (data_symbol !== null) {
       setSymbol(data_symbol)
     }
-  }, [window])
+  }, [])
 
   useEffect(() => {
     const show_on = ['home', 'settings']
