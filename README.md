@@ -19,9 +19,10 @@
 2.  **Game Mechanics**
 
     ```shell
-    Players are allowed to select 6 different car colors, a lucky number from 0 to 9 and a synthethic market.
-    While on race if the lucky number of their choice showed up as the last digit on the next tick 
-    of the synthetic instrument they have chose, the player will get a permanent bonus top speed and a 3 second invulnerability 
+    Players are allowed to select 6 different car colors,a lucky number from 0 to 9 
+    and a synthethic market. While on race if the lucky number of their choice 
+    showed up as the last digit on the next tick of the synthetic instrument they have chose,
+    the player will get a permanent bonus top speed and a 3 second invulnerability 
     same luck happens to the other cars. The first who reached the finish like wins the game.
     ```
 
@@ -40,7 +41,8 @@
      <img alt="Magnet" src="https://synthetick-race.vercel.app/static/magnet-451d8b58943e599d45920c7e15690ee6.png" width="60" /> <br />
       **Magnet** 
        ```shell
-    Pull all cars to its direction and destroy them upon collision, weak gravity pull will still occur after collision.
+    Pull all cars to its direction and destroy them upon collision, 
+    a weak gravity pull will still occur after few seconds of collision.
     Note: When a car reach a certain speed it will be able to avoid the explosion
     AKA: TEAMLEAD - pull you in a meeting while you are in the middle of serious coding
     ```
@@ -71,6 +73,6 @@
 
 <p align="center">
   <a href="https://synthetick-race.vercel.app/">
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsryAgpKzVFRT08CHNqhcxEiM76YoZuqTaVw&usqp=CAU" width="200" style="border-radius: 20px;overflow:hidden;" alt="Play Now">
+    <img src="https://www.freeiconspng.com/uploads/play-button-icon-png-23.png" width="100" style="border-radius: 20px;overflow:hidden;" alt="Play Now">
   </a>
 </p>
